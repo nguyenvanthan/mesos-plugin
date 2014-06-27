@@ -15,6 +15,10 @@
         <f:textbox field="frameworkName" default="Jenkins Scheduler" />
     </f:entry>
 
+    <f:entry title="${%Mesos User}">
+        <f:textbox field="mesosUser" default="jenkins" />
+    </f:entry>
+
     <f:advanced>
         <f:entry>
             <f:repeatable add="${%Add Slave Info}" var="slaveInfo" name="slaveInfos" items="${instance.slaveInfos}" noAddButton="false" minimum="1" >

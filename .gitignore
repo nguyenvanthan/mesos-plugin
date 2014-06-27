@@ -2,6 +2,7 @@
 .classpath
 .project
 .settings/
+.idea/
 target/
 work/
 
@@ -12,3 +13,4 @@ deploy.sh
 */target/*
 */build/*
 /bin
+*.iml

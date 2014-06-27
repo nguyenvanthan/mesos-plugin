@@ -52,11 +52,13 @@ import org.kohsuke.stapler.StaplerRequest;
 
 public class MesosCloud extends Cloud {
   private static final String DEFAULT_FRAMEWORK_NAME = "Jenkins Framework";
+  private static final String DEFAULT_MESOS_USER = "jenkins";
 
   private String nativeLibraryPath;
   private String master;
   private String description;
   private String frameworkName;
+  private String mesosUser;
   private final boolean checkpoint; // Set true to enable Mesos slave checkpoints. False by default.
   private boolean onDemandRegistration; // If set true, this framework disconnects when there are no builds in the queue and re-registers when there are.
   
@@ -109,7 +111,7 @@ public class MesosCloud extends Cloud {
 
   @DataBoundConstructor
   public MesosCloud(String nativeLibraryPath, String master,
-      String description, String frameworkName,
+      String description, String frameworkName, String mesosUser,
       List<MesosSlaveInfo> slaveInfos,
       boolean checkpoint, boolean onDemandRegistration) throws NumberFormatException {
     super("MesosCloud");
@@ -118,6 +120,7 @@ public class MesosCloud extends Cloud {
     this.master = master;
     this.description = description;
     this.frameworkName = StringUtils.isNotBlank(frameworkName) ? frameworkName : DEFAULT_FRAMEWORK_NAME;
+    this.mesosUser = StringUtils.isNotBlank(mesosUser) ? mesosUser : DEFAULT_MESOS_USER;
     this.slaveInfos = slaveInfos;
     this.checkpoint = checkpoint;
     this.onDemandRegistration = onDemandRegistration;
@@ -277,6 +280,14 @@ public class MesosCloud extends Cloud {
     this.frameworkName = frameworkName;
   }
 
+  public String getMesosUser() {
+    return mesosUser;
+  }
+
+  public void setMesosUser(String mesosUser) {
+    this.mesosUser = mesosUser;
+  }
+
   public boolean isOnDemandRegistration() {
     return onDemandRegistration;
   }
@@ -335,6 +346,7 @@ public class MesosCloud extends Cloud {
     private String master;
     private String description;
     private String frameworkName;
+    private String mesosUser;
     private String slaveAttributes;
     private boolean checkpoint;
     private List<MesosSlaveInfo> slaveInfos;
@@ -350,6 +362,7 @@ public class MesosCloud extends Cloud {
       master = object.getString("master");
       description = object.getString("description");
       frameworkName = object.getString("frameworkName");
+      mesosUser = object.getString("mesosUser");
       slaveAttributes = object.getString("slaveAttributes");
       checkpoint = object.getBoolean("checkpoint");
       slaveInfos = new ArrayList<MesosSlaveInfo>();
