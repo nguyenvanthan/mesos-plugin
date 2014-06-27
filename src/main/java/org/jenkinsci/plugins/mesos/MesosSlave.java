@@ -35,6 +35,8 @@ public class MesosSlave extends Slave {
   private final double cpus;
   private final int mem;
   private final String jvmArgs;
+  private final String jenkinsUsername;
+  private final String jenkinsUserPassword;
 
   private static final Logger LOGGER = Logger.getLogger(MesosSlave.class
       .getName());
@@ -42,7 +44,7 @@ public class MesosSlave extends Slave {
   @DataBoundConstructor
   public MesosSlave(String name, int numExecutors, String labelString,
       double slaveCpus, int slaveMem, double executorCpus, int executorMem,
-      int idleTerminationMinutes, String jvmArgs) throws FormException, IOException
+      int idleTerminationMinutes, String jvmArgs, String jenkinsUsername, String jenkinsUserPassword) throws FormException, IOException
   {
     super(name,
           labelString, // node description.
@@ -57,6 +59,8 @@ public class MesosSlave extends Slave {
     this.cpus = slaveCpus + (numExecutors * executorCpus);
     this.mem = slaveMem + (numExecutors * executorMem);
     this.jvmArgs = jvmArgs;
+    this.jenkinsUsername = jenkinsUsername;
+    this.jenkinsUserPassword = jenkinsUserPassword;
 
     LOGGER.info("Constructing Mesos slave");
   }
@@ -73,7 +77,15 @@ public class MesosSlave extends Slave {
       return jvmArgs;
   }
 
-  public void terminate() {
+  public String getJenkinsUsername() {
+      return jenkinsUsername;
+  }
+
+  public String getJenkinsUserPassword() {
+      return jenkinsUserPassword;
+  }
+
+    public void terminate() {
     LOGGER.info("Terminating slave " + getNodeName());
     try {
       // Remove the node from hudson.

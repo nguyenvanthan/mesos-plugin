@@ -20,6 +20,9 @@ public class MesosSlaveInfo {
   private final int executorMem; // MB.
   private final int idleTerminationMinutes;
   private final String jvmArgs;
+  private final String jenkinsUsername;
+  private final String jenkinsUserPassword;
+
   private final JSONObject slaveAttributes; // Slave attributes JSON representation.
 
   private String labelString = DEFAULT_LABEL_NAME;
@@ -29,7 +32,8 @@ public class MesosSlaveInfo {
   @DataBoundConstructor
   public MesosSlaveInfo(String labelString, String slaveCpus, String slaveMem,
       String maxExecutors, String executorCpus, String executorMem,
-      String idleTerminationMinutes, String slaveAttributes, String jvmArgs) throws NumberFormatException {
+      String idleTerminationMinutes, String slaveAttributes, String jvmArgs,
+      String jenkinsUsername, String jenkinsUserPassword) throws NumberFormatException {
     this.slaveCpus = Double.parseDouble(slaveCpus);
     this.slaveMem = Integer.parseInt(slaveMem);
     this.maxExecutors = Integer.parseInt(maxExecutors);
@@ -40,6 +44,8 @@ public class MesosSlaveInfo {
         : DEFAULT_LABEL_NAME;
     this.jvmArgs = StringUtils.isNotBlank(jvmArgs) ? cleanseJvmArgs(jvmArgs)
         : DEFAULT_JVM_ARGS;
+    this.jenkinsUsername = StringUtils.isNotBlank(jenkinsUsername) ? jenkinsUsername : null;
+    this.jenkinsUserPassword = StringUtils.isNotBlank(jenkinsUserPassword) ? jenkinsUserPassword : null;
 
     // Parse the attributes provided from the cloud config
     JSONObject jsonObject = null;
@@ -91,7 +97,15 @@ public class MesosSlaveInfo {
     return jvmArgs;
   }
 
-  /**
+  public String getJenkinsUsername() {
+    return jenkinsUsername;
+  }
+
+  public String getJenkinsUserPassword() {
+    return jenkinsUserPassword;
+  }
+
+    /**
    * Removes any additional {@code -Xmx} JVM args from the
    * provided JVM arguments.  This is to ensure that the logic
    * that sets the maximum heap sized based on the memory available

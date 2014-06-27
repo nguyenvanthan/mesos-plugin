@@ -220,7 +220,9 @@ public class MesosCloud extends Cloud {
         slaveInfo.getExecutorCpus(),
         slaveInfo.getExecutorMem(),
         slaveInfo.getIdleTerminationMinutes(),
-        slaveInfo.getJvmArgs());
+        slaveInfo.getJvmArgs(),
+        slaveInfo.getJenkinsUsername(),
+        slaveInfo.getJenkinsUserPassword());
   }
 
   public List<MesosSlaveInfo> getSlaveInfos() {
@@ -295,6 +297,8 @@ public class MesosCloud extends Cloud {
   public void setOnDemandRegistration(boolean onDemandRegistration) {
     this.onDemandRegistration = onDemandRegistration;
   }
+
+
 
   @Override
   public DescriptorImpl getDescriptor() {
@@ -380,7 +384,9 @@ public class MesosCloud extends Cloud {
                 object.getString("executorMem"),
                 object.getString("idleTerminationMinutes"),
                 object.getString("slaveAttributes"),
-                object.getString("jvmArgs"));
+                object.getString("jvmArgs"),
+                object.getString("jenkinsUsername"),
+                object.getString("jenkinsUserPassword"));
             slaveInfos.add(slaveInfo);
           }
         }

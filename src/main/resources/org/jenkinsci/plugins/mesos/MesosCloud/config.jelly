@@ -55,6 +55,13 @@
                     <f:entry title="${%Additional Jenkins Slave Agent JVM arguments}" field="jvmArgs">
                         <f:textbox field="jvmArgs" default="-Xms16m -XX:+UseConcMarkSweepGC -Djava.net.preferIPv4Stack=true" value="${slaveInfo.jvmArgs}"/>
                     </f:entry>
+                    <f:entry title="${%Jenkins Slave Credentials username}">
+                        <f:textbox field="jenkinsUsername" value="${slaveInfo.jenkinsUsername}"/>
+                    </f:entry>
+                    <f:entry title="${%Jenkins Slave Credentials user password}">
+                        <f:password field="jenkinsUserPassword" value="${slaveInfo.jenkinsUserPassword}"/>
+                    </f:entry>
+
                     <f:entry>
                           <div align="right" class="repeatable-delete show-if-only" style="margin-left: 1em;">
                             <f:repeatableDeleteButton value="${%Delete Slave Info}" /><br/>

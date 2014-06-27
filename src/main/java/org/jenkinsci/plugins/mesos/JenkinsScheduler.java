@@ -61,7 +61,11 @@ public class JenkinsScheduler implements Scheduler {
   private static final String SLAVE_COMMAND_FORMAT =
       "java -DHUDSON_HOME=jenkins -server -Xmx%dm %s -jar slave.jar  -jnlpUrl %s";
 
-  private Queue<Request> requests;
+  private static final String SLAVE_COMMAND_CREDENTIAL_FORMAT =
+      " -jnlpCredentials %s:%s";
+
+
+    private Queue<Request> requests;
   private Map<TaskID, Result> results;
   private volatile MesosSchedulerDriver driver;
   private final String jenkinsMaster;
@@ -329,7 +333,12 @@ public class JenkinsScheduler implements Scheduler {
                 .newBuilder()
                 .setValue(
                     String.format(SLAVE_COMMAND_FORMAT, request.request.mem, request.request.jvmArgs,
-                        getJnlpUrl(request.request.slave.name)))
+                        getJnlpUrl(request.request.slave.name))
+                        // add credentials if provided
+                        .concat(
+                            request.request.user!=null && request.request.password!=null ?
+                                    String.format(SLAVE_COMMAND_CREDENTIAL_FORMAT,request.request.user,request.request.password) : ""
+                        ))
                 .addUris(
                     CommandInfo.URI.newBuilder().setValue(
                         joinPaths(jenkinsMaster, SLAVE_JAR_URI_SUFFIX)).setExecutable(false).setExtract(false))).build();

@@ -33,13 +33,18 @@ public abstract class Mesos {
     final int mem;
     final String label;
     final String jvmArgs;
+    // for jnlp credentials
+    final String user;
+    final String password;
 
-    public SlaveRequest(JenkinsSlave slave, double cpus, int mem, String label, String jvmArgs) {
+    public SlaveRequest(JenkinsSlave slave, double cpus, int mem, String label, String jvmArgs, String user, String password) {
       this.slave = slave;
       this.cpus = cpus;
       this.mem = mem;
       this.label = label;
       this.jvmArgs = jvmArgs;
+      this.user = user;
+      this.password = password;
     }
   }
 

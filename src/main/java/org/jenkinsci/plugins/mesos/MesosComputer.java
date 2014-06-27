@@ -36,6 +36,14 @@ public class MesosComputer extends SlaveComputer {
       return ((MesosSlave) super.getNode()).getJvmArgs();
   }
 
+  public String getJenkinsUsername() {
+      return ((MesosSlave) super.getNode()).getJenkinsUsername();
+  }
+
+  public String getJenkinsUserPassword() {
+      return ((MesosSlave) super.getNode()).getJenkinsUserPassword();
+  }
+
   @Override
   public HttpResponse doDoDelete() throws IOException {
     checkPermission(DELETE);
