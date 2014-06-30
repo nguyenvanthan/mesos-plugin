@@ -204,10 +204,13 @@ public class JenkinsScheduler implements Scheduler {
           createMesosTask(offer, request);
           requests.remove(request);
           break;
+        } else {
+          LOGGER.info("Offer not matched!");
         }
       }
 
       if (!matched) {
+        LOGGER.info("Decline offers " + offer.getId());
         driver.declineOffer(offer.getId());
       }
     }
@@ -217,16 +220,22 @@ public class JenkinsScheduler implements Scheduler {
     double cpus = -1;
     double mem = -1;
 
+    LOGGER.info("Analyze offer : " + offer.getId());
+
+      offer.getResourcesList();
+
     for (Resource resource : offer.getResourcesList()) {
       if (resource.getName().equals("cpus")) {
         if (resource.getType().equals(Value.Type.SCALAR)) {
           cpus = resource.getScalar().getValue();
+          LOGGER.info("offer cpus : " + cpus);
         } else {
           LOGGER.severe("Cpus resource was not a scalar: " + resource.getType().toString());
         }
       } else if (resource.getName().equals("mem")) {
         if (resource.getType().equals(Value.Type.SCALAR)) {
           mem = resource.getScalar().getValue();
+          LOGGER.info("offer mem : " + mem);
         } else {
           LOGGER.severe("Mem resource was not a scalar: " + resource.getType().toString());
         }
@@ -245,10 +254,13 @@ public class JenkinsScheduler implements Scheduler {
     // Check for sufficient cpu and memory resources in the offer.
     double requestedCpus = request.request.cpus;
     double requestedMem = (1 + JVM_MEM_OVERHEAD_FACTOR) * request.request.mem;
+    LOGGER.info("requested resources : cpus -->" + requestedCpus + ", mem --> " + requestedMem);
     // Get matching slave attribute for this label.
     JSONObject slaveAttributes = getMesosCloud().getSlaveAttributeForLabel(request.request.label);
+    LOGGER.info("requested slave attributes -->" + getMesosCloud().getSlaveAttributeForLabel(request.request.label));
 
     if (requestedCpus <= cpus && requestedMem <= mem && slaveAttributesMatch(offer, slaveAttributes)) {
+      LOGGER.info("Offer " + offer.getId() + "matches !!!");
       return true;
     } else {
       LOGGER.info(
