@@ -66,13 +66,14 @@
       tends to lag behind a bit
     -->
     <maven-hpi-plugin.version>1.95</maven-hpi-plugin.version>
+    <mesos.version>0.18.2</mesos.version>
   </properties>
 
   <dependencies>
       <dependency>
           <groupId>org.apache.mesos</groupId>
           <artifactId>mesos</artifactId>
-          <version>0.18.1</version>
+          <version>${mesos.version}</version>
       </dependency>
       <dependency>
           <groupId>com.google.protobuf</groupId>
