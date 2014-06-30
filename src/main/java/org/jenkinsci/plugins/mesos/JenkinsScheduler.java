@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jenkins.model.Jenkins;
@@ -195,6 +196,7 @@ public class JenkinsScheduler implements Scheduler {
   @Override
   public synchronized void resourceOffers(SchedulerDriver driver, List<Offer> offers) {
     LOGGER.info("Received offers " + offers.size());
+    LOGGER.warning("logger level : "+ LOGGER.getLevel().getName());
     for (Offer offer : offers) {
       boolean matched = false;
       for (Request request : requests) {
@@ -219,12 +221,12 @@ public class JenkinsScheduler implements Scheduler {
   private boolean matches(Offer offer, Request request) {
     double cpus = -1;
     double mem = -1;
-
+    LOGGER.warning("logger level : "+ LOGGER.getLevel().getName());
     LOGGER.info("Analyze offer : " + offer.getId());
 
-      offer.getResourcesList();
-
-    for (Resource resource : offer.getResourcesList()) {
+      List<Resource> resourcesList = offer.getResourcesList();
+      for (Resource resource : resourcesList) {
+      LOGGER.log(Level.INFO,"resource name: {0}", resource.getName());
       if (resource.getName().equals("cpus")) {
         if (resource.getType().equals(Value.Type.SCALAR)) {
           cpus = resource.getScalar().getValue();
@@ -265,7 +267,7 @@ public class JenkinsScheduler implements Scheduler {
     } else {
       LOGGER.info(
           "Offer not sufficient for slave request:\n" +
-          offer.getResourcesList().toString() +
+          resourcesList.toString() +
           "\n" + offer.getAttributesList().toString() +
           "\nRequested for Jenkins slave:\n" +
           "  cpus: " + requestedCpus + "\n" +
@@ -314,7 +316,7 @@ public class JenkinsScheduler implements Scheduler {
   private void createMesosTask(Offer offer, Request request) {
     TaskID taskId = TaskID.newBuilder().setValue(request.request.slave.name).build();
 
-    LOGGER.info("Launching task " + taskId.getValue() + " with URI " +
+    LOGGER.info("hing task " + taskId.getValue() + " with URI " +
                 joinPaths(jenkinsMaster, SLAVE_JAR_URI_SUFFIX));
 
     TaskInfo task = TaskInfo
@@ -348,8 +350,8 @@ public class JenkinsScheduler implements Scheduler {
                         getJnlpUrl(request.request.slave.name))
                         // add credentials if provided
                         .concat(
-                            request.request.user!=null && request.request.password!=null ?
-                                    String.format(SLAVE_COMMAND_CREDENTIAL_FORMAT,request.request.user,request.request.password) : ""
+                                request.request.user != null && request.request.password != null ?
+                                        String.format(SLAVE_COMMAND_CREDENTIAL_FORMAT, request.request.user, request.request.password) : ""
                         ))
                 .addUris(
                     CommandInfo.URI.newBuilder().setValue(
